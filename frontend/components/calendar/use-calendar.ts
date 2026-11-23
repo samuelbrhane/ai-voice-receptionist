@@ -10,25 +10,33 @@ const LIVE_REFRESH_MS = 2500;
 export function useCalendar(day: string, live: boolean) {
   const [data, setData] = useState<CalendarDay | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [version, setVersion] = useState(0);
 
-  const load = useCallback(async () => {
-    try {
-      setData(await getCalendar(day));
-      setError(null);
-    } catch {
-      setError("Could not load the calendar.");
-    }
-  }, [day]);
-
+  // Fetch whenever the day changes or a reload is asked for
   useEffect(() => {
-    void load();
-  }, [load]);
+    let current = true;
+    getCalendar(day)
+      .then((result) => {
+        if (!current) return;
+        setData(result);
+        setError(null);
+      })
+      .catch(() => {
+        if (current) setError("Could not load the calendar.");
+      });
+    return () => {
+      current = false;
+    };
+  }, [day, version]);
 
+  // Poll while a call is live
   useEffect(() => {
     if (!live) return;
-    const timer = setInterval(() => void load(), LIVE_REFRESH_MS);
+    const timer = setInterval(() => setVersion((value) => value + 1), LIVE_REFRESH_MS);
     return () => clearInterval(timer);
-  }, [live, load]);
+  }, [live]);
 
-  return { data, error, reload: load };
+  const reload = useCallback(() => setVersion((value) => value + 1), []);
+
+  return { data, error, reload };
 }

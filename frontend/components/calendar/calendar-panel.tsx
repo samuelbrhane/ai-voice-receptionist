@@ -20,7 +20,7 @@ export function CalendarPanel({ live, refreshKey }: Props) {
 
   // Reload after a call ends or the demo is reset
   useEffect(() => {
-    void reload();
+    reload();
   }, [refreshKey, reload]);
 
   // While live, jump to the day of the agent's newest change
