@@ -24,6 +24,8 @@ DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() == "true"
 
 # Vapi sends this in the x-vapi-secret header on every tool call
 VAPI_SERVER_SECRET = os.getenv("VAPI_SERVER_SECRET", "")
+# Calendar used by test chats in the Vapi dashboard, which carry no visitor
+DASHBOARD_VISITOR_ID = os.getenv("DASHBOARD_VISITOR_ID", "")
 
 # Demo limits, applied when DEMO_MODE is on
 DAILY_CALLS_PER_VISITOR = int(os.getenv("DAILY_CALLS_PER_VISITOR", "3"))

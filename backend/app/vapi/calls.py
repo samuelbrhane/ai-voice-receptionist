@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from fastapi import Request
 
-from app.config import DEMO_MODE
+from app.config import DASHBOARD_VISITOR_ID, DEMO_MODE
 
 
 @dataclass
@@ -36,6 +36,7 @@ def visitor_id_from(message: dict, request: Request) -> str | None:
         if isinstance(source, dict) and source.get("visitorId"):
             return str(source["visitorId"])
     # Local testing with curl only
-    if not DEMO_MODE:
+    if not DEMO_MODE and request.headers.get("x-visitor-id"):
         return request.headers.get("x-visitor-id")
-    return None
+    # Test chats in the Vapi dashboard
+    return DASHBOARD_VISITOR_ID or None
