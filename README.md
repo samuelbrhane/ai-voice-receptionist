@@ -12,21 +12,19 @@ The example business is Aurelia Dental, a fictional clinic in Cosenza. The agent
 
 ![Voice demo](screenshots/voice-demo.gif)
 
-| A live call | The calendar updating |
-|---|---|
-| ![Call](screenshots/call.png) | ![Calendar](screenshots/calendar.png) |
+![Calendar updating after a booking](screenshots/calendar.png)
 
 ## What it does
 
 - Answers calls in the browser, with separate English and Italian lines
-- Books new appointments: asks for the treatment, checks both dentists' calendars, offers two or three real times, and confirms
+- Books new appointments: asks for the treatment, checks both dentists' calendars, offers up to three real times, and confirms
 - Finds a caller's booking by phone number, and moves or cancels it
 - Mentions the 30 euro fee for cancellations within 24 hours
 - Offers today's earliest emergency slot for pain or a broken tooth, and points serious cases to 112
 - Refuses what the clinic doesn't offer, for example whitening with a dentist who doesn't do it
 - Shows the conversation and the calendar live on the page, with every booking, move and cancellation highlighted
 
-Each visitor gets a private copy of the clinic calendar, partly booked, with a sample patient to try rescheduling. Visitors never see each other's bookings.
+Each visitor gets a private copy of the clinic calendar, partly booked, with a sample patient to try rescheduling. Visitors never see each other's bookings, and a returning visitor gets a fresh calendar after a week.
 
 ## How it works
 
@@ -76,8 +74,8 @@ With `DEMO_MODE=true`, each visitor can make 3 calls a day of up to 2 minutes, w
 
 ## Stack
 
-- **Voice:** Vapi (speech recognition, voice, call handling), with Deepgram Nova 3 for transcription
-- **Model:** OpenAI
+- **Voice:** Vapi (speech recognition, voice, call handling)
+- **Model:** OpenAI GPT-4.1 mini
 - **Backend:** FastAPI, SQLAlchemy, Alembic, Pydantic
 - **Database:** Postgres on Neon
 - **Frontend:** Next.js 16, TypeScript, Tailwind CSS v4, Vapi Web SDK, types generated from the OpenAPI spec
