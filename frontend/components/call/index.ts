@@ -1,1 +1,2 @@
-export { CallPanel } from "./call-panel";
+export { CallCard } from "./call-card";
+export { Transcript } from "./transcript";
