@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { addDays, clinicDay, formatDay, today } from "@/lib/format";
+import { addDays, clinicDay, formatDay } from "@/lib/format";
 
 import { DayColumns } from "./day-columns";
 import { RecentChanges } from "./recent-changes";
@@ -14,9 +14,11 @@ type Props = {
 };
 
 export function CalendarPanel({ live, refreshKey }: Props) {
-  const [day, setDay] = useState(today);
+  // No day picked yet means "today", as the backend sees it in clinic time
+  const [day, setDay] = useState<string | null>(null);
   const { data, error, reload } = useCalendar(day, live);
   const lastChange = useRef<string | null>(null);
+  const shown = day ?? data?.date ?? null;
 
   // Reload after a call ends or the demo is reset
   useEffect(() => {
@@ -33,23 +35,28 @@ export function CalendarPanel({ live, refreshKey }: Props) {
     lastChange.current = newest.updated_at;
   }, [data, live]);
 
+  const move = (amount: number) => {
+    if (shown) setDay(addDays(shown, amount));
+  };
+
   return (
     <section className="rounded-2xl border border-line bg-surface p-4 sm:p-5">
       <div className="mb-4 flex items-center justify-between gap-2">
         <button
           type="button"
-          onClick={() => setDay((current) => addDays(current, -1))}
-          disabled={day <= today()}
+          onClick={() => move(-1)}
+          disabled={!data || !shown || shown <= data.today}
           className="rounded-full border border-line px-3 py-1 text-sm disabled:opacity-40"
           aria-label="Previous day"
         >
           ←
         </button>
-        <h3 className="text-center font-display text-lg font-medium">{formatDay(day)}</h3>
+        <h3 className="text-center font-display text-lg font-medium">{shown ? formatDay(shown) : "Today"}</h3>
         <button
           type="button"
-          onClick={() => setDay((current) => addDays(current, 1))}
-          className="rounded-full border border-line px-3 py-1 text-sm"
+          onClick={() => move(1)}
+          disabled={!shown}
+          className="rounded-full border border-line px-3 py-1 text-sm disabled:opacity-40"
           aria-label="Next day"
         >
           →

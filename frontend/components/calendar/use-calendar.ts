@@ -7,7 +7,7 @@ import { getCalendar, type CalendarDay } from "@/lib/api";
 const LIVE_REFRESH_MS = 2500;
 
 /** Loads one day, and refreshes it every few seconds while a call is live. */
-export function useCalendar(day: string, live: boolean) {
+export function useCalendar(day: string | null, live: boolean) {
   const [data, setData] = useState<CalendarDay | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [version, setVersion] = useState(0);
@@ -15,7 +15,7 @@ export function useCalendar(day: string, live: boolean) {
   // Fetch whenever the day changes or a reload is asked for
   useEffect(() => {
     let current = true;
-    getCalendar(day)
+    getCalendar(day ?? undefined)
       .then((result) => {
         if (!current) return;
         setData(result);
