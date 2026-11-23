@@ -1,0 +1,68 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+import { addDays, clinicDay, formatDay, today } from "@/lib/format";
+
+import { DayColumns } from "./day-columns";
+import { RecentChanges } from "./recent-changes";
+import { useCalendar } from "./use-calendar";
+
+type Props = {
+  live: boolean;
+  refreshKey: number;
+};
+
+export function CalendarPanel({ live, refreshKey }: Props) {
+  const [day, setDay] = useState(today);
+  const { data, error, reload } = useCalendar(day, live);
+  const lastChange = useRef<string | null>(null);
+
+  // Reload after a call ends or the demo is reset
+  useEffect(() => {
+    void reload();
+  }, [refreshKey, reload]);
+
+  // While live, jump to the day of the agent's newest change
+  useEffect(() => {
+    const newest = data?.recent[0];
+    if (!newest) return;
+    if (live && lastChange.current && newest.updated_at !== lastChange.current) {
+      setDay(clinicDay(newest.starts_at));
+    }
+    lastChange.current = newest.updated_at;
+  }, [data, live]);
+
+  return (
+    <section className="rounded-2xl border border-line bg-surface p-4 sm:p-5">
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={() => setDay((current) => addDays(current, -1))}
+          disabled={day <= today()}
+          className="rounded-full border border-line px-3 py-1 text-sm disabled:opacity-40"
+          aria-label="Previous day"
+        >
+          ←
+        </button>
+        <h3 className="text-center font-display text-lg font-medium">{formatDay(day)}</h3>
+        <button
+          type="button"
+          onClick={() => setDay((current) => addDays(current, 1))}
+          className="rounded-full border border-line px-3 py-1 text-sm"
+          aria-label="Next day"
+        >
+          →
+        </button>
+      </div>
+
+      {error && <p className="text-sm text-live">{error}</p>}
+      {data ? <DayColumns day={data} /> : <p className="py-16 text-center text-ink-soft">Loading the calendar…</p>}
+
+      <div className="mt-5 border-t border-line pt-4">
+        <h4 className="mb-2 text-sm font-semibold">What Sofia just did</h4>
+        <RecentChanges items={data?.recent ?? []} onOpenDay={setDay} />
+      </div>
+    </section>
+  );
+}
