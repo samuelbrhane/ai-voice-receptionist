@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 
 import { CalendarPanel } from "@/components/calendar";
-import { CallPanel } from "@/components/call";
+import { CallCard, Transcript } from "@/components/call";
+import { Hero } from "@/components/landing";
 import { getSession, resetDemo, type Session } from "@/lib/api";
 import { useCall } from "@/lib/call";
 
@@ -26,15 +27,21 @@ export function LiveDemo() {
   };
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-      <div className="flex min-w-0 flex-col gap-5">
-        <CallPanel call={call} />
-        <TryCard sample={session?.sample} />
-        <DemoBar callsLeft={session?.calls_left} maxSeconds={session?.max_call_seconds} onReset={reset} />
-      </div>
-      <div className="min-w-0">
-        <CalendarPanel live={call.status === "live"} refreshKey={call.endedCount + resetCount} />
-      </div>
-    </div>
+    <>
+      <Hero>
+        <CallCard call={call} />
+      </Hero>
+
+      <section id="try" className="mx-auto grid max-w-6xl scroll-mt-6 gap-5 px-4 pb-14 sm:px-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+        <div className="flex min-w-0 flex-col gap-5">
+          <Transcript lines={call.transcript} checking={call.toolBusy} />
+          <TryCard sample={session?.sample} />
+          <DemoBar callsLeft={session?.calls_left} maxSeconds={session?.max_call_seconds} onReset={reset} />
+        </div>
+        <div className="min-w-0">
+          <CalendarPanel live={call.status === "live"} refreshKey={call.endedCount + resetCount} />
+        </div>
+      </section>
+    </>
   );
 }
