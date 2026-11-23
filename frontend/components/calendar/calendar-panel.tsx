@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { addDays, clinicDay, formatDay } from "@/lib/format";
 
 import { DayColumns } from "./day-columns";
+import { DaySkeleton } from "./day-skeleton";
 import { RecentChanges } from "./recent-changes";
 import { useCalendar } from "./use-calendar";
 
@@ -39,6 +40,9 @@ export function CalendarPanel({ live, refreshKey }: Props) {
     if (shown) setDay(addDays(shown, amount));
   };
 
+  // Show the skeleton until the requested day has arrived
+  const loading = !data || (day !== null && data.date !== day);
+
   return (
     <section className="rounded-2xl border border-line bg-surface p-4 sm:p-5">
       <div className="mb-4 flex items-center justify-between gap-2">
@@ -63,8 +67,8 @@ export function CalendarPanel({ live, refreshKey }: Props) {
         </button>
       </div>
 
-      {error && <p className="text-sm text-live">{error}</p>}
-      {data ? <DayColumns day={data} /> : <p className="py-16 text-center text-ink-soft">Loading the calendar…</p>}
+      {error && <p className="mb-2 text-sm text-live">{error}</p>}
+      {loading ? <DaySkeleton /> : <DayColumns day={data} />}
 
       <div className="mt-5 border-t border-line pt-4">
         <h4 className="mb-2 text-sm font-semibold">What Sofia just did</h4>
