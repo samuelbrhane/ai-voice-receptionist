@@ -1,26 +1,64 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Surfaces */
+  --color-porcelain: #f3f6f5;
+  --color-surface: #ffffff;
+  --color-mint: #e3efec;
+  --color-line: #d9e2e0;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Text */
+  --color-ink: #12232b;
+  --color-ink-soft: #5b6b72;
+
+  /* Clinic teal, and red only for a live call */
+  --color-teal: #1f6f78;
+  --color-teal-deep: #164f56;
+  --color-live: #d9483b;
+  --color-fresh: #fff1c7;
+
+  /* Fonts */
+  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-figtree);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-porcelain);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+}
+
+/* Ring around the call button while a call is live */
+@keyframes live-pulse {
+  0% { box-shadow: 0 0 0 0 rgb(217 72 59 / 0.45); }
+  70% { box-shadow: 0 0 0 12px rgb(217 72 59 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(217 72 59 / 0); }
+}
+.live-pulse { animation: live-pulse 1.6s ease-out infinite; }
+
+/* A calendar slot the agent just booked or moved */
+@keyframes just-changed {
+  from { background-color: var(--color-fresh); }
+  to { background-color: var(--color-mint); }
+}
+.just-changed { animation: just-changed 4s ease-out both; }
+
+/* Voice bars while someone is speaking */
+@keyframes voice-bar {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+.voice-bar { transform-origin: bottom; animation: voice-bar 0.9s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .live-pulse, .just-changed, .voice-bar { animation: none; }
 }
