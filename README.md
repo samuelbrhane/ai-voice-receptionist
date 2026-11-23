@@ -1,18 +1,16 @@
 # AI Voice Receptionist
 
+![Booking a cleaning by voice](screenshots/voice-demo.gif)
+
+| Landing page | Calendar after a booking |
+|---|---|
+| ![Landing page](screenshots/hero.png) | ![Calendar after a booking](screenshots/calendar.png) |
+
 An AI receptionist that answers calls for a dental clinic, in English and Italian. Callers book, move and cancel appointments by voice, and every change shows up in a live calendar while they talk. Built with Vapi for the voice, a FastAPI backend for the calendar tools, and a Next.js frontend.
 
 The example business is Aurelia Dental, a fictional clinic in Cosenza. The agent is called Sofia.
 
 **Live demo:** https://aurelia-dental-voice-receptionist.vercel.app
-
-![Landing page](screenshots/hero.png)
-
-## Demo
-
-![Voice demo](screenshots/voice-demo.gif)
-
-![Calendar updating after a booking](screenshots/calendar.png)
 
 ## What it does
 
