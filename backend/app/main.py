@@ -3,6 +3,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.routers import vapi_router
 
 app = FastAPI(
     title="Aurelia Dental Voice Receptionist API",
@@ -13,6 +14,8 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
     redoc_url=None,
 )
+
+app.include_router(vapi_router)
 
 
 @app.get("/api/health", tags=["system"], summary="Check the API and database")
