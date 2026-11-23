@@ -21,3 +21,6 @@ VISITOR_COOKIE_DAYS = 180
 
 # Public demo
 DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() == "true"
+
+# Vapi sends this in the x-vapi-secret header on every tool call
+VAPI_SERVER_SECRET = os.getenv("VAPI_SERVER_SECRET", "")
