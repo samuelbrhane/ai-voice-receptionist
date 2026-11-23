@@ -13,13 +13,35 @@ export type TranscriptEvent = {
   final: boolean;
 };
 
+type Line = TranscriptLine & { done: string };
+
 let nextId = 1;
 
-/** Adds a transcript event: updates the speaker's open line, or starts a new one. */
+/**
+ * One bubble per turn: finished pieces from the same speaker are joined,
+ * and the piece still being spoken is shown after them.
+ */
 export function addToTranscript(lines: TranscriptLine[], event: TranscriptEvent): TranscriptLine[] {
-  const last = lines.at(-1);
-  if (last && last.speaker === event.role && !last.final) {
-    return [...lines.slice(0, -1), { ...last, text: event.text, final: event.final }];
+  const last = lines.at(-1) as Line | undefined;
+
+  if (last && last.speaker === event.role) {
+    const done = last.done ?? (last.final ? last.text : "");
+    const joined = event.final ? [done, event.text].filter(Boolean).join(" ") : done;
+    const line: Line = {
+      ...last,
+      done: joined,
+      text: event.final ? joined : [done, event.text].filter(Boolean).join(" "),
+      final: event.final,
+    };
+    return [...lines.slice(0, -1), line];
   }
-  return [...lines, { id: nextId++, speaker: event.role, text: event.text, final: event.final }];
+
+  const line: Line = {
+    id: nextId++,
+    speaker: event.role,
+    text: event.text,
+    final: event.final,
+    done: event.final ? event.text : "",
+  };
+  return [...lines, line];
 }
