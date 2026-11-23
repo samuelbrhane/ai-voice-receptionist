@@ -1,0 +1,65 @@
+[
+  {
+    "name": "check_availability",
+    "description": "Find free appointment times. Use it before offering any time to the caller. Without a date it returns the earliest free times; with a date it returns free times on that day. For emergencies use treatment \"emergency\" with today's date.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "treatment": { "type": "string", "enum": ["checkup", "cleaning", "filling", "whitening", "emergency"], "description": "The visit type the caller wants." },
+        "date": { "type": "string", "description": "Day to check, as YYYY-MM-DD. Leave out to get the earliest free times." },
+        "dentist": { "type": "string", "enum": ["ferri", "vitale"], "description": "Only if the caller asks for a specific dentist." }
+      },
+      "required": ["treatment"]
+    }
+  },
+  {
+    "name": "book_appointment",
+    "description": "Book an appointment at one of the free times returned by check_availability. Only call it after the caller has confirmed the time, and you have their full name and phone number.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "patient_name": { "type": "string", "description": "Caller's full name." },
+        "phone": { "type": "string", "description": "Caller's phone number, digits as spoken." },
+        "treatment": { "type": "string", "enum": ["checkup", "cleaning", "filling", "whitening", "emergency"] },
+        "dentist": { "type": "string", "enum": ["ferri", "vitale"], "description": "The dentist of the chosen free time." },
+        "start": { "type": "string", "description": "The 'start' value of the chosen free time, as YYYY-MM-DDTHH:MM." }
+      },
+      "required": ["patient_name", "phone", "treatment", "dentist", "start"]
+    }
+  },
+  {
+    "name": "find_appointments",
+    "description": "Find the caller's upcoming appointments by phone number. Use it before rescheduling or cancelling, to get the appointment_id.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "phone": { "type": "string", "description": "Caller's phone number, digits as spoken." }
+      },
+      "required": ["phone"]
+    }
+  },
+  {
+    "name": "reschedule_appointment",
+    "description": "Move an existing appointment to a new free time. First use find_appointments to get the appointment_id, and check_availability for the new time. Only call it after the caller confirms the new time.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "appointment_id": { "type": "string", "description": "From find_appointments." },
+        "new_start": { "type": "string", "description": "The 'start' value of the new free time, as YYYY-MM-DDTHH:MM." },
+        "dentist": { "type": "string", "enum": ["ferri", "vitale"], "description": "The dentist of the new free time." }
+      },
+      "required": ["appointment_id", "new_start"]
+    }
+  },
+  {
+    "name": "cancel_appointment",
+    "description": "Cancel an existing appointment. First use find_appointments to get the appointment_id, and confirm with the caller which appointment to cancel.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "appointment_id": { "type": "string", "description": "From find_appointments." }
+      },
+      "required": ["appointment_id"]
+    }
+  }
+]
