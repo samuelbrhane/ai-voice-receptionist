@@ -1,0 +1,21 @@
+from fastapi import Depends, FastAPI
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+
+from app.db import get_db
+
+app = FastAPI(
+    title="Aurelia Dental Voice Receptionist API",
+    description="Calendar and booking tools for an AI voice receptionist.",
+    version="0.1.0",
+    # Under /api so the docs work through the Next.js proxy too
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json",
+    redoc_url=None,
+)
+
+
+@app.get("/api/health", tags=["system"], summary="Check the API and database")
+def health(db: Session = Depends(get_db)):
+    db.execute(text("select 1"))
+    return {"status": "ok", "database": "ok"}
