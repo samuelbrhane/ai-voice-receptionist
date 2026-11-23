@@ -1,3 +1,7 @@
+"use client";
+
+import { useInView } from "@/components/motion";
+
 const STEPS = [
   { title: "You speak", text: "Vapi streams your voice and turns it into text as you talk." },
   { title: "Sofia decides", text: "The language model follows the clinic's rules and picks a tool when it needs the calendar." },
@@ -6,13 +10,19 @@ const STEPS = [
 ];
 
 export function HowItWorks() {
+  const { ref, inView } = useInView<HTMLOListElement>();
+
   return (
     <section className="bg-surface py-14">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <h2 className="font-display text-3xl font-bold tracking-tight">How a call works</h2>
-        <ol className="mt-6 grid gap-4 md:grid-cols-4">
+        <ol ref={ref} className="mt-6 grid gap-4 md:grid-cols-4">
           {STEPS.map((step, index) => (
-            <li key={step.title} className="rounded-2xl bg-porcelain p-5">
+            <li
+              key={step.title}
+              className={`step rounded-2xl bg-porcelain p-5 ${inView ? "step-on" : ""}`}
+              style={{ animationDelay: `${index * 280}ms` }}
+            >
               <span className="tabular font-display text-2xl font-bold text-teal">{index + 1}</span>
               <h3 className="mt-2 font-semibold">{step.title}</h3>
               <p className="mt-1 text-sm text-ink-soft">{step.text}</p>
