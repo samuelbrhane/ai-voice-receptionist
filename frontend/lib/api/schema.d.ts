@@ -146,6 +146,11 @@ export interface components {
              * Format: date
              */
             date: string;
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
             /** Is Open */
             is_open: boolean;
             /** Opens At */
