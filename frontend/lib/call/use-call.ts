@@ -30,6 +30,7 @@ export function useCall() {
   const [seconds, setSeconds] = useState(0);
   const [maxSeconds, setMaxSeconds] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [endedCount, setEndedCount] = useState(0);
 
   // One Vapi client for the page, created in the browser only
   const getVapi = useCallback(() => {
@@ -39,6 +40,7 @@ export function useCall() {
     vapi.on("call-end", () => {
       setStatus("ended");
       setSpeaking(false);
+      setEndedCount((count) => count + 1);
     });
     vapi.on("speech-start", () => setSpeaking(true));
     vapi.on("speech-end", () => setSpeaking(false));
@@ -109,5 +111,5 @@ export function useCall() {
     vapiRef.current?.stop();
   }, []);
 
-  return { status, language, transcript, speaking, seconds, maxSeconds, error, start, stop };
+  return { status, language, transcript, speaking, seconds, maxSeconds, error, endedCount, start, stop };
 }
