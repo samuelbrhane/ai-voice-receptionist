@@ -22,7 +22,7 @@ export function HowItWorks() {
         <p className="mt-6 max-w-3xl text-ink-soft">
           The model never touches the database directly. It can only call five tools, and the backend
           rejects anything that breaks a rule: a taken slot, a time outside opening hours, or a dentist
-          who doesn't do that treatment.
+          who doesn&apos;t do that treatment.
         </p>
       </div>
     </section>
