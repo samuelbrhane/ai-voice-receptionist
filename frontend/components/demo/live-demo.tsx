@@ -28,18 +28,30 @@ export function LiveDemo() {
 
   return (
     <>
-      <Hero>
-        <CallCard call={call} />
-      </Hero>
+      <Hero />
 
-      <section id="try" className="mx-auto grid max-w-6xl scroll-mt-6 gap-5 px-4 pb-14 sm:px-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-        <div className="flex min-w-0 flex-col gap-5">
-          <Transcript lines={call.transcript} checking={call.toolBusy} />
-          <TryCard sample={session?.sample} />
-          <DemoBar callsLeft={session?.calls_left} maxSeconds={session?.max_call_seconds} onReset={reset} />
+      {/* Orb and conversation side by side, so both are in view during a call */}
+      <section
+        id="try"
+        className="mx-auto grid max-w-6xl scroll-mt-6 gap-5 px-4 sm:px-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+      >
+        <div
+          className="rise-in flex items-center justify-center rounded-2xl border border-line bg-surface py-8"
+          style={{ animationDelay: "150ms" }}
+        >
+          <CallCard call={call} />
         </div>
+        <Transcript lines={call.transcript} checking={call.toolBusy} />
+      </section>
+
+      {/* Calendar below, with what to try next to it */}
+      <section className="mx-auto mt-5 grid max-w-6xl gap-5 px-4 pb-14 sm:px-6 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)]">
         <div className="min-w-0">
           <CalendarPanel live={call.status === "live"} refreshKey={call.endedCount + resetCount} />
+        </div>
+        <div className="flex min-w-0 flex-col gap-5">
+          <TryCard sample={session?.sample} />
+          <DemoBar callsLeft={session?.calls_left} maxSeconds={session?.max_call_seconds} onReset={reset} />
         </div>
       </section>
     </>
