@@ -1,0 +1,27 @@
+# Private notes
+PROGRESS.md
+
+# Environment
+.env
+.env.local
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node and Next.js
+node_modules/
+.next/
+
+# Vercel
+.vercel/
+
+# Upwork video, kept locally and not pushed
+media/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
