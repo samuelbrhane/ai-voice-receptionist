@@ -27,6 +27,8 @@ export function useCall() {
   const [language, setLanguage] = useState<Language | null>(null);
   const [transcript, setTranscript] = useState<TranscriptLine[]>([]);
   const [speaking, setSpeaking] = useState(false);
+  const [volume, setVolume] = useState(0);
+  const [toolBusy, setToolBusy] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [maxSeconds, setMaxSeconds] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -36,16 +38,25 @@ export function useCall() {
   const getVapi = useCallback(() => {
     if (vapiRef.current) return vapiRef.current;
     const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY ?? "");
+
     vapi.on("call-start", () => setStatus("live"));
     vapi.on("call-end", () => {
       setStatus("ended");
       setSpeaking(false);
+      setVolume(0);
+      setToolBusy(false);
       setEndedCount((count) => count + 1);
     });
     vapi.on("speech-start", () => setSpeaking(true));
     vapi.on("speech-end", () => setSpeaking(false));
+    // Sofia's voice level, 0 to 1, many times a second
+    vapi.on("volume-level", (level: number) => setVolume(level));
+
     vapi.on("message", (message: VapiMessage) => {
+      if (message.type === "tool-calls") setToolBusy(true);
+      if (message.type === "tool-calls-result") setToolBusy(false);
       if (message.type !== "transcript" || !message.role || !message.transcript) return;
+      if (message.role === "assistant") setToolBusy(false);
       setTranscript((lines) =>
         addToTranscript(lines, {
           role: message.role!,
@@ -54,10 +65,12 @@ export function useCall() {
         }),
       );
     });
+
     vapi.on("error", () => {
       setStatus("error");
       setError("The call could not continue. Please try again.");
     });
+
     vapiRef.current = vapi;
     return vapi;
   }, []);
@@ -111,5 +124,18 @@ export function useCall() {
     vapiRef.current?.stop();
   }, []);
 
-  return { status, language, transcript, speaking, seconds, maxSeconds, error, endedCount, start, stop };
+  return {
+    status,
+    language,
+    transcript,
+    speaking,
+    volume,
+    toolBusy,
+    seconds,
+    maxSeconds,
+    error,
+    endedCount,
+    start,
+    stop,
+  };
 }
