@@ -4,8 +4,9 @@ import json
 import sys
 import urllib.request
 
+from app.config import VAPI_SERVER_SECRET as SECRET
+
 API = "http://localhost:8000/api/vapi/tools"
-SECRET = "local-secret"
 
 
 def call(visitor_id: str, name: str, arguments: dict) -> dict:
