@@ -42,6 +42,7 @@ def calendar(
     window = opening_window(day)
     return CalendarOut(
         date=day,
+        today=now().date(),
         is_open=window is not None,
         opens_at=window[0].strftime("%H:%M") if window else None,
         closes_at=window[1].strftime("%H:%M") if window else None,

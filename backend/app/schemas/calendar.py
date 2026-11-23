@@ -23,6 +23,7 @@ class CalendarAppointment(BaseModel):
 
 class CalendarOut(BaseModel):
     date: date
+    today: date
     is_open: bool
     opens_at: str | None
     closes_at: str | None
